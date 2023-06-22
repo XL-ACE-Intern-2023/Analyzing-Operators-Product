@@ -10,7 +10,9 @@ warnings.simplefilter("ignore")
 class yield_functions:
     def __init__(self):
         self.scale_color = 'inferno'
-        self.discrete_color = px.colors.sequential.Inferno
+        self.discrete_color = {"AXIS" : "#6F2791", "XL" : "#01478F", "Telkomsel" : "#ED0226",
+                           "Indosat" : "#FFD600", "Smartfren" : "#FF1578", "Tri" : "#9E1F64"}
+        self.operator_in_order = {'Operator':['XL', 'Telkomsel', 'Indosat', 'AXIS', 'Tri', 'Smartfren']}
         return
     
     def _generate_yield_data(self, data_yield):
@@ -65,7 +67,8 @@ class yield_functions:
                 x="Operator",
                 y="Yield ((Rp/GB)/Hari)",
                 color='Operator',
-                color_discrete_sequence = self.discrete_color)
+                category_orders = self.operator_in_order,
+                color_discrete_map = self.discrete_color)
             operators_yield = self.set_figure(operators_yield, 'Yield For Each Operators')
         
         elif type == 'non_apps' :
@@ -74,7 +77,8 @@ class yield_functions:
                 x="Operator",
                 y="Yield Non-Apps ((Rp/GB)/Hari)",
                 color='Operator',
-                color_discrete_sequence = self.discrete_color)
+                category_orders = self.operator_in_order,
+                color_discrete_map = self.discrete_color)
             operators_yield = self.set_figure(operators_yield, 'Yield Non-Apps For Each Operators')
 
         return operators_yield
@@ -86,7 +90,9 @@ class yield_functions:
                 x='Operator',
                 y='Yield ((Rp/GB)/Hari)',
                 color="Operator", 
-                color_discrete_sequence = self.discrete_color)
+                category_orders = self.operator_in_order,
+                color_discrete_map = self.discrete_color)
+            cluster_yield.update_xaxes(categoryorder='array', categoryarray= ['XL', 'Telkomsel', 'Indosat', 'AXIS','Tri','Smartfren'])
             cluster_yield = self.set_figure(cluster_yield, f"Yield For {label} Product")
         elif type == 'non-apps':
             cluster_yield = px.box(
@@ -94,7 +100,8 @@ class yield_functions:
                 x='Operator',
                 y='Yield Non-Apps ((Rp/GB)/Hari)',
                 color="Operator", 
-                color_discrete_sequence = self.discrete_color)
+                category_orders = self.operator_in_order,
+                color_discrete_map = self.discrete_color)
             cluster_yield = self.set_figure(cluster_yield, f"Yield Non-Apps For {label} Product")
 
         return cluster_yield
