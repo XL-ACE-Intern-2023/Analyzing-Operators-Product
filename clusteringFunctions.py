@@ -205,7 +205,7 @@ class clustering_functions:
             text = "Cluster Label",
             color_continuous_scale = self.scale_color)
         internet_apps_quota_vis.update_traces(textposition = 'top right')
-        internet_apps_quota_vis = self.set_figure(internet_apps_quota_vis, 'Main and Apps Quota Product Clusters')
+        internet_apps_quota_vis = self.set_figure(internet_apps_quota_vis, 'Main and App Quota Product Clusters')
 
         return (limited_quota_vis, unlimited_quota_vis, internet_apps_quota_vis)
 
@@ -314,7 +314,7 @@ class clustering_functions:
             barmode = 'stack',
             height=500,
             color_continuous_scale = self.scale_color)
-        stacked_bar = self.set_figure(stacked_bar, "Proportions of Cluster For Each Product Type")
+        stacked_bar = self.set_figure(stacked_bar, "Cluster Proportions For Each Product Type")
 
         return stacked_bar
 

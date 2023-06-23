@@ -47,7 +47,7 @@ class introduction_functions:
             if main != 0 and app == 0:
                 temp_label.append("Main Quota")
             elif main != 0 and app != 0:
-                temp_label.append("Combination Quota")
+                temp_label.append("Main and App Quota")
             else:
                 temp_label.append("Unlimited Quota")
         raw_data['Jenis Produk'] = np.array(temp_label)

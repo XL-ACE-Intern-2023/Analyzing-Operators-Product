@@ -69,7 +69,7 @@ class yield_functions:
                 color='Operator',
                 category_orders = self.operator_in_order,
                 color_discrete_map = self.discrete_color)
-            operators_yield = self.set_figure(operators_yield, 'Yield For Each Operators')
+            operators_yield = self.set_figure(operators_yield, 'Main, Unlimited, and Application Quota Yield For Each Operators')
         
         elif type == 'non_apps' :
             operators_yield = px.box(
@@ -79,7 +79,7 @@ class yield_functions:
                 color='Operator',
                 category_orders = self.operator_in_order,
                 color_discrete_map = self.discrete_color)
-            operators_yield = self.set_figure(operators_yield, 'Yield Non-Apps For Each Operators')
+            operators_yield = self.set_figure(operators_yield, 'Main and Unlimited Quota For Each Operators')
 
         return operators_yield
    
@@ -93,7 +93,7 @@ class yield_functions:
                 category_orders = self.operator_in_order,
                 color_discrete_map = self.discrete_color)
             cluster_yield.update_xaxes(categoryorder='array', categoryarray= ['XL', 'Telkomsel', 'Indosat', 'AXIS','Tri','Smartfren'])
-            cluster_yield = self.set_figure(cluster_yield, f"Yield For {label} Product")
+            cluster_yield = self.set_figure(cluster_yield, f"Main, Unlimited, and Application Quota Yield For {label} Product")
         elif type == 'non-apps':
             cluster_yield = px.box(
                 filtered_yield_data.loc[filtered_yield_data['Cluster']==cluster],
@@ -102,6 +102,6 @@ class yield_functions:
                 color="Operator", 
                 category_orders = self.operator_in_order,
                 color_discrete_map = self.discrete_color)
-            cluster_yield = self.set_figure(cluster_yield, f"Yield Non-Apps For {label} Product")
+            cluster_yield = self.set_figure(cluster_yield, f"Main and Unlimited Quota Yield For Each Operators For {label} Product")
 
         return cluster_yield
