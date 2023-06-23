@@ -20,11 +20,11 @@ data_with_clusters, data_lmt, data_ulmt, data_apps, center_lmt, center_ulmt, cen
 
 convert = {
     'High Main (1)':1,
-    'Small Main (2)':2,
+    'Low Main (2)':2,
     'Medium Main (3)':3,
-    'Premium Unlimited (4)':4,
-    'Economy Unlimited (5)':5,
-    '50:50 Small App and Main (6)':6,
+    'High Unlimited (4)':4,
+    'Low Unlimited (5)':5,
+    '50:50 Low App and Main (6)':6,
     '80:20 High App and Main (7)':7,
     '20:80 Medium Main and App (8)':8
 }
@@ -36,18 +36,14 @@ tab1, tab2, tab3, tab4 = st.tabs(['Introduction', 'Clustering Analysis', 'Yield 
 with tab1:
     with st.container():
         st.markdown("<h1 style='text-align: center; color: black;'>Analyzing Product Data From Every Operators</h1>", unsafe_allow_html=True)
-        st.write('---')
-        col1, pad1, col2 = st.columns((15,0.5,15))
-
-        with col1:
-            product_subproduct_counts = introduction.visualize_product_subproduct_counts(data)
-            st.plotly_chart(product_subproduct_counts, use_container_width = True)
-
-        with col2:
-            fup_quota_product = introduction.visualize_product_type(data)
-            st.plotly_chart(fup_quota_product, use_container_width = True)
 
     with st.container():
+        st.write('---')
+        fup_quota_product = introduction.visualize_product_type(data)
+        st.plotly_chart(fup_quota_product, use_container_width = True)
+
+    with st.container():
+        st.write('---')
         mean_operators_product_price = introduction.visualize_mean_operators_product_price(data)
         st.plotly_chart(mean_operators_product_price, use_container_width = True)
 

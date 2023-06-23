@@ -18,16 +18,6 @@ class clustering_functions:
         self.discrete_color = px.colors.sequential.Inferno
         self.discrete_color2 = {"AXIS" : "#6F2791", "XL" : "#01478F", "Telkomsel" : "#ED0226","Indosat" : "#FFD600",
                                                       "Smartfren" : "#FF1578", "Tri" : "#9E1F64"}
-        self.convert =  {
-            1:'High Main (1)',
-            2:'Small Main (2)',
-            3:'Medium Main (3)',
-            4:'Premium Unlimited (4)',
-            5:'Economy Unlimited (5)',
-            6:'50:50 Small App and Main (6)',
-            7:'80:20 High App and Main (7)',
-            8:'20:80 Medium Main and App (8)'
-        }
         self.operator_in_order = {'Operator': ['XL', 'Telkomsel', 'Indosat', 'AXIS', 'Tri', 'Smartfren']}
         np.random.seed(69)
         return
@@ -140,11 +130,11 @@ class clustering_functions:
     def label_clusters(self, data):
         convert = {
             1:'High Main (1)',
-            2:'Small Main (2)',
+            2:'Low Main (2)',
             3:'Medium Main (3)',
-            4:'Premium Unlimited (4)',
-            5:'Economy Unlimited (5)',
-            6:'50:50 Small App and Main (6)',
+            4:'High Unlimited (4)',
+            5:'Low Unlimited (5)',
+            6:'50:50 Low App and Main (6)',
             7:'80:20 High App and Main (7)',
             8:'20:80 Medium Main and App (8)'
         }
@@ -316,12 +306,14 @@ class clustering_functions:
         data_to_plot = self.label_clusters(data_to_plot)
         stacked_bar = px.bar(
             data_to_plot,
-            x="Proportion (%)",
-            y="Jenis Produk",
+            y="Proportion (%)",
+            x="Jenis Produk",
             hover_data='Jumlah',
-            color="Cluster Label",
+            color="Proportion (%)",
+            text='Cluster Label',
             barmode = 'stack',
-            color_discrete_sequence=self.discrete_color)
+            height=500,
+            color_continuous_scale = self.scale_color)
         stacked_bar = self.set_figure(stacked_bar, "Proportions of Cluster For Each Product Type")
 
         return stacked_bar
@@ -369,13 +361,15 @@ class clustering_functions:
         data_cluster = data_with_clusters.groupby('Operator')['Cluster'].value_counts('Cluster').reset_index().rename(columns={'proportion':'Proportion (%)'})
         data_cluster['Proportion (%)'] = data_cluster['Proportion (%)'] * 100
         data_cluster = self.label_clusters(data_cluster)
+        data_cluster['Cluster'] = data_cluster['Cluster'].astype('string')
         cluster_proportions = px.bar(
             data_cluster,
-            x="Proportion (%)",
-            y="Operator",
-            text="Cluster",
-            color="Cluster Label",
+            y="Proportion (%)",
+            x="Operator",
+            text="Cluster Label",
+            color="Cluster",
             barmode = 'stack',
+            height=1000,
             color_discrete_sequence=self.discrete_color)
         cluster_proportions = self.set_figure(cluster_proportions, "Clusters Proportions For Each Operators")
 
