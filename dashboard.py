@@ -11,7 +11,7 @@ introduction = introduction_functions()
 clustering = clustering_functions()
 yield_ = yield_functions()
 
-data = pd.read_csv("Product Information - 2023-06-16.csv")
+data = pd.read_csv("Analyzing-Operators-Product/dataset/Product Information - 2023-06-16.csv")
 (data_lmt, data_ulmt, data_apps), (scaled_data_lmt, scaled_data_ulmt, scaled_data_apps) = data_prep.prepare_data(data)
 scaled_data_lmt = data_prep.PCA_decomposition(scaled_data_lmt, 2)
 scaled_data_ulmt = data_prep.PCA_decomposition(scaled_data_ulmt, 2)
