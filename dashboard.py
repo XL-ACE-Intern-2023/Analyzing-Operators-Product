@@ -11,7 +11,7 @@ introduction = introduction_functions()
 clustering = clustering_functions()
 yield_ = yield_functions()
 
-data = pd.read_csv("Analyzing-Operators-Product/dataset/Product Information - 2023-06-16.csv")
+data = pd.read_csv("dataset/Product Information - 2023-06-25.csv")
 (data_lmt, data_ulmt, data_apps), (scaled_data_lmt, scaled_data_ulmt, scaled_data_apps) = data_prep.prepare_data(data)
 scaled_data_lmt = data_prep.PCA_decomposition(scaled_data_lmt, 2)
 scaled_data_ulmt = data_prep.PCA_decomposition(scaled_data_ulmt, 2)
@@ -114,6 +114,8 @@ with tab3:
         st.write('---')
         cluster_label = st.selectbox('Pick a Cluster', convert.keys())
         cluster = convert[cluster_label]
+        no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
+        data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
         cluster_yield_type1 = yield_._visualize_cluster_yield(data_with_clusters_yield, cluster, 'apps', cluster_label)
         cluster_yield_type2 = yield_._visualize_cluster_yield(data_with_clusters_yield, cluster, 'non-apps', cluster_label)
         st.plotly_chart(cluster_yield_type1, use_container_width = True)

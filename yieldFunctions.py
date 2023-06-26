@@ -1,17 +1,17 @@
 import warnings
-import numpy as np
-import pandas as pd
-import skfuzzy as fuzz
 import plotly.express as px
-import plotly.graph_objects as go
 
 warnings.simplefilter("ignore")
 
 class yield_functions:
     def __init__(self):
         self.scale_color = 'inferno'
-        self.discrete_color = {"AXIS" : "#6F2791", "XL" : "#01478F", "Telkomsel" : "#ED0226",
-                           "Indosat" : "#FFD600", "Smartfren" : "#FF1578", "Tri" : "#9E1F64"}
+        self.discrete_color = {"AXIS" : "#6F2791", 
+                                "XL" : "#01478F", 
+                                "Telkomsel" : "#ED0226",
+                                "Indosat" : "#FFD600",
+                                "Smartfren" : "#FF1578",
+                                "Tri" : "#9E1F64"}
         self.operator_in_order = {'Operator':['XL', 'Telkomsel', 'Indosat', 'AXIS', 'Tri', 'Smartfren']}
         return
     
@@ -55,53 +55,37 @@ class yield_functions:
         return fig
 
     def _visualize_operators_yield(self, filtered_yield_data, type):
-        '''
-        Yield based on operator can be reviewed by two types. 
-        Type 1, quota is based on main quota, apps quota, and fup quota. 
-        Type 2, quota is based on main quota and fup quota. The apps quota is excluded.
-        type_ can be fill with type_ = apps or type_ = non_apps
-        '''
         if type == 'apps' :
-            operators_yield = px.box(
-                filtered_yield_data,
-                x="Operator",
-                y="Yield ((Rp/GB)/Hari)",
-                color='Operator',
-                category_orders = self.operator_in_order,
-                color_discrete_map = self.discrete_color)
-            operators_yield = self.set_figure(operators_yield, 'Main, Unlimited, and Application Quota Yield For Each Operators')
-        
+            y = 'Yield ((Rp/GB)/Hari)'
+            title = f"Main, Unlimited, and Application Quota Yield For For Each Operators"        
         elif type == 'non_apps' :
-            operators_yield = px.box(
+            y = 'Yield Non-Apps ((Rp/GB)/Hari)'
+            title = f"Main and Unlimited Quota Yield For Each Operators For Each Operators"
+        operators_yield = px.box(
                 filtered_yield_data,
                 x="Operator",
-                y="Yield Non-Apps ((Rp/GB)/Hari)",
+                y=y,
                 color='Operator',
                 category_orders = self.operator_in_order,
                 color_discrete_map = self.discrete_color)
-            operators_yield = self.set_figure(operators_yield, 'Main and Unlimited Quota For Each Operators')
+        operators_yield = self.set_figure(operators_yield, title)
 
         return operators_yield
    
     def _visualize_cluster_yield(self, filtered_yield_data, cluster, type, label):
         if type == 'apps':
-            cluster_yield = px.box(
-                filtered_yield_data.loc[filtered_yield_data['Cluster']==cluster],
-                x='Operator',
-                y='Yield ((Rp/GB)/Hari)',
-                color="Operator", 
-                category_orders = self.operator_in_order,
-                color_discrete_map = self.discrete_color)
-            cluster_yield.update_xaxes(categoryorder='array', categoryarray= ['XL', 'Telkomsel', 'Indosat', 'AXIS','Tri','Smartfren'])
-            cluster_yield = self.set_figure(cluster_yield, f"Main, Unlimited, and Application Quota Yield For {label} Product")
+            y = 'Yield ((Rp/GB)/Hari)'
+            title = f"Main, Unlimited, and Application Quota Yield For {label} Product"
         elif type == 'non-apps':
-            cluster_yield = px.box(
-                filtered_yield_data.loc[filtered_yield_data['Cluster']==cluster],
-                x='Operator',
-                y='Yield Non-Apps ((Rp/GB)/Hari)',
-                color="Operator", 
-                category_orders = self.operator_in_order,
-                color_discrete_map = self.discrete_color)
-            cluster_yield = self.set_figure(cluster_yield, f"Main and Unlimited Quota Yield For Each Operators For {label} Product")
+            y = 'Yield Non-Apps ((Rp/GB)/Hari)'
+            title = f"Main and Unlimited Quota Yield For Each Operators For {label} Product"
+        cluster_yield = px.box(
+            filtered_yield_data.loc[filtered_yield_data['Cluster']==cluster],
+            x='Operator',
+            y=y,
+            color="Operator", 
+            category_orders = self.operator_in_order,
+            color_discrete_map = self.discrete_color)
+        cluster_yield = self.set_figure(cluster_yield, title)
 
         return cluster_yield

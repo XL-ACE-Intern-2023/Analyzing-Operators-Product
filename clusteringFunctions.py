@@ -6,7 +6,6 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 from sklearn_extra.cluster import KMedoids
 from sklearn.metrics import silhouette_score
 
@@ -14,10 +13,13 @@ warnings.simplefilter("ignore")
 
 class clustering_functions:
     def __init__(self):
-        self.scale_color = 'inferno'
-        self.discrete_color = px.colors.sequential.Inferno
-        self.discrete_color2 = {"AXIS" : "#6F2791", "XL" : "#01478F", "Telkomsel" : "#ED0226","Indosat" : "#FFD600",
-                                                      "Smartfren" : "#FF1578", "Tri" : "#9E1F64"}
+        self.discrete_color = px.colors.qualitative.Plotly
+        self.discrete_color_operator = {"AXIS" : "#6F2791", 
+                                "XL" : "#01478F", 
+                                "Telkomsel" : "#ED0226",
+                                "Indosat" : "#FFD600",
+                                "Smartfren" : "#FF1578",
+                                "Tri" : "#9E1F64"}
         self.operator_in_order = {'Operator': ['XL', 'Telkomsel', 'Indosat', 'AXIS', 'Tri', 'Smartfren']}
         np.random.seed(69)
         return
@@ -166,48 +168,37 @@ class clustering_functions:
         return fig
 
     def visualize_clusters(self, center_lmt, center_ulmt, center_apps):
-        center_lmt = center_lmt.rename(columns={"Kuota Utama (GB) Mean":"Kuota Utama (GB)", "Harga Mean":"Harga (Rp)"})
-        center_ulmt = center_ulmt.rename(columns={"Fair Usage Policy (GB) Mean":"Fair Usage Policy (GB)", "Harga Mean":"Harga (Rp)"})
-        center_apps = center_apps.rename(columns={"Kuota Utama (GB) Mean":"Kuota Utama (GB)", "Kuota Aplikasi (GB) Mean":"Kuota Aplikasi (GB)", "Harga Mean":"Harga (Rp)"})
+        center_lmt = center_lmt.rename(columns={"Kuota Utama (GB) Mean":"Kuota Utama (GB)", 
+                                                "Harga Mean":"Harga (Rp)"})
+        center_ulmt = center_ulmt.rename(columns={"Fair Usage Policy (GB) Mean":"Fair Usage Policy (GB)", 
+                                                  "Harga Mean":"Harga (Rp)"})
+        center_apps = center_apps.rename(columns={"Kuota Utama (GB) Mean":"Kuota Utama (GB)", 
+                                                  "Kuota Aplikasi (GB) Mean":"Kuota Aplikasi (GB)", 
+                                                  "Harga Mean":"Harga (Rp)"})
         center_lmt = self.label_clusters(center_lmt)
         center_ulmt = self.label_clusters(center_ulmt)
         center_apps = self.label_clusters(center_apps)
-        limited_quota_vis = px.scatter(
-            center_lmt,
-            x="Kuota Utama (GB)",
-            y="Harga (Rp)",
-            size="Masa Berlaku (Hari) Mean",
-            error_x="Kuota Utama (GB) Var",
-            error_y="Harga Var",
-            text = "Cluster Label",
-            color_continuous_scale = self.scale_color)
-        limited_quota_vis = self.set_figure(limited_quota_vis, 'Main Quota Product Clusters')
-        limited_quota_vis.update_traces(textposition = 'top right')
-        unlimited_quota_vis = px.scatter(
-            center_ulmt,
-            x="Fair Usage Policy (GB)",
-            y="Harga (Rp)",
-            size="Masa Berlaku (Hari) Mean",
-            error_x="Fair Usage Policy (GB) Var",
-            error_y="Harga Var",
-            text = "Cluster Label",
-            color_discrete_sequence = self.discrete_color)
-        unlimited_quota_vis.update_traces(textposition = 'top right')
-        unlimited_quota_vis = self.set_figure(unlimited_quota_vis, 'Unlimited Quota Product Clusters')
-        internet_apps_quota_vis = px.scatter(
-            center_apps,
-            x="Kuota Utama (GB)",
-            y="Harga (Rp)",
-            color="Kuota Aplikasi (GB)",
-            size="Masa Berlaku (Hari) Mean",
-            error_x="Kuota Utama (GB) Var",
-            error_y="Harga Var",
-            text = "Cluster Label",
-            color_continuous_scale = self.scale_color)
-        internet_apps_quota_vis.update_traces(textposition = 'top right')
-        internet_apps_quota_vis = self.set_figure(internet_apps_quota_vis, 'Main and App Quota Product Clusters')
+        store_x = ["Kuota Utama (GB)", "Fair Usage Policy (GB)", "Kuota Utama (GB)"]
+        store_color = [None, None, "Kuota Aplikasi (GB)"]
+        store_title = ['Main Quota Product Clusters', 'Unlimited Quota Product Clusters', 'Main and App Quota Product Clusters']
+        store_data = [center_lmt, center_ulmt, center_apps]
+        store_vis = []
+        for data, x, color, title in zip(store_data, store_x, store_color, store_title):
+            vis = px.scatter(
+                data,
+                x=x,
+                y="Harga (Rp)",
+                color=color,
+                size='Masa Berlaku (Hari) Mean',
+                error_x=f"{x} Var",
+                error_y="Harga Var",
+                text = "Cluster Label"
+            )
+            vis.update_traces(textposition = 'top right')
+            vis = self.set_figure(vis, title)
+            store_vis.append(vis)
 
-        return (limited_quota_vis, unlimited_quota_vis, internet_apps_quota_vis)
+        return tuple(store_vis)
 
     def visualize_quota_group(self, data):
         fig = go.Figure()
@@ -237,51 +228,25 @@ class clustering_functions:
         clustered = self.label_clusters((clustered))
         list_visual = []
         if cluster <= 3 :
-            # Kuota Utama, Harga, Masa Berlaku
             y_labels = ['Kuota Utama (GB)', 'Harga']
-            for y_label in y_labels :
-                visual = px.box(
-                                clustered,
-                                x="Operator",
-                                y= y_label,
-                                color='Operator',
-                                color_discrete_map=self.discrete_color2,
-                                category_orders=self.operator_in_order
-                                )
-                visual = self.set_figure(visual, "")
-                list_visual.append(visual)
         elif cluster <= 5 :
-            # FUP, Harga, Masa Berlaku
             y_labels = ['Fair Usage Policy (GB)', 'Harga']
-            for y_label in y_labels :
+        else :
+            y_labels = ['gabungan', 'Harga']
+        for y_label in y_labels :
+            if y_label == 'gabungan' :
+                visual = self.visualize_quota_group(clustered)
+            else:
                 visual = px.box(
                                 clustered,
                                 x="Operator",
                                 y= y_label,
                                 color='Operator',
-                                color_discrete_map=self.discrete_color2,
-                                category_orders = self.operator_in_order
-                                )
-                visual = self.set_figure(visual, "")
-                list_visual.append(visual)
-        else :
-            # Kuota Utama, Kuota Aplikasi, Harga, Masa Berlaku
-            y_labels = ['gabungan', 'Harga']
-            for y_label in y_labels :
-                if y_label == 'gabungan' :
-                    visual = self.visualize_quota_group(clustered)
-                    visual = self.set_figure(visual, "")
-                else : 
-                    visual = px.box(
-                                clustered,
-                                x="Operator",
-                                y= y_label,
-                                color='Operator',
-                                color_discrete_map=self.discrete_color2,
+                                color_discrete_map=self.discrete_color_operator,
                                 category_orders=self.operator_in_order
                                 )
-                    visual = self.set_figure(visual, "")
-                list_visual.append(visual)
+            visual = self.set_figure(visual, None)
+            list_visual.append(visual)
 
         return tuple(list_visual)
 
@@ -312,8 +277,7 @@ class clustering_functions:
             color="Proportion (%)",
             text='Cluster Label',
             barmode = 'stack',
-            height=500,
-            color_continuous_scale = self.scale_color)
+            height=500)
         stacked_bar = self.set_figure(stacked_bar, "Cluster Proportions For Each Product Type")
 
         return stacked_bar

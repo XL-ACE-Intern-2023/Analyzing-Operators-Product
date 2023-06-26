@@ -177,7 +177,7 @@ def temporary_fix(data):
     
     return data
 
-raw_data = pd.read_csv('Paket Data Competitors Raw.csv')
+raw_data = pd.read_csv('dataset/Paket Data Competitors Raw.csv')
 clean_data = fix_columns(raw_data)
 clean_data = convert_raw_label(clean_data)
 scraped_data = scrape_data()
@@ -188,4 +188,4 @@ extracted_data = extract_regex(merged_data)
 final_data = create_final_df(extracted_data)
 data = combine_columns(final_data)
 data = temporary_fix(data)
-data.to_csv(f'Product Information - {date.today()}.csv', index=False)
+data.to_csv(f'dataset/Product Information - {date.today()}.csv', index=False)

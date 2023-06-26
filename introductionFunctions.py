@@ -1,7 +1,6 @@
 import warnings
 import re
 import numpy as np
-import pandas as pd
 import plotly.express as px
 
 warnings.simplefilter("ignore")
@@ -9,7 +8,12 @@ warnings.simplefilter("ignore")
 class introduction_functions:
     def __init__(self):
         self.scale_color = 'inferno'
-        self.discrete_color = {"AXIS" : "#6F2791", "XL" : "#01478F", "Telkomsel" : "#ED0226","Indosat" : "#FFD600", "Smartfren" : "#FF1578", "Tri" : "#9E1F64"}
+        self.discrete_color_operator = {"AXIS" : "#6F2791", 
+                                        "XL" : "#01478F", 
+                                        "Telkomsel" : "#ED0226",
+                                        "Indosat" : "#FFD600", 
+                                        "Smartfren" : "#FF1578",
+                                        "Tri" : "#9E1F64"}
         return
     
     def set_figure(self, fig, title, title_size=28, font_size=20):
@@ -59,8 +63,7 @@ class introduction_functions:
             y="Count",
             color="Jenis Produk",
             barmode = 'stack',
-            category_orders= {'Operator':operator_in_order},
-            color_discrete_sequence = px.colors.sequential.Inferno)
+            category_orders= {'Operator':operator_in_order})
         fup_quota_product = self.set_figure(fup_quota_product, 'Number of Each Product Type For Each Operators')
         
         return fup_quota_product
@@ -73,7 +76,7 @@ class introduction_functions:
             y="Price Average",
             error_y = 'std',
             color='Operator',
-            color_discrete_map = self.discrete_color)
+            color_discrete_map = self.discrete_color_operator)
         mean_operators_product_price = self.set_figure(mean_operators_product_price, 'Average of Each Operators Product Price')
         
         return mean_operators_product_price
