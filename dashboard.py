@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 from dataPrepFunctions import data_prep_functions
 from clusteringFunctions import clustering_functions
@@ -16,8 +17,10 @@ data = pd.read_csv("dataset/Product Information - 2023-06-25.csv")
 
 scaled_data_lmt = data_prep.PCA_decomposition(scaled_data_lmt, 2)
 scaled_data_ulmt = data_prep.PCA_decomposition(scaled_data_ulmt, 2)
-scaled_data_apps = data_prep.PCA_decomposition(scaled_data_apps, 3)
+scaled_data_apps = data_prep.PCA_decomposition(scaled_data_apps, 2)
+
 data_with_clusters, data_lmt, data_ulmt, data_apps, center_lmt, center_ulmt, center_apps = clustering.create_clusters(data_lmt, data_ulmt, data_apps, scaled_data_lmt, scaled_data_ulmt, scaled_data_apps)
+
 
 convert = {
         'High Main (1)':1,
@@ -106,8 +109,6 @@ with tab3:
             st.subheader("Clusters & Yields")
     with st.container():
         st.write('---')
-        # no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
-        # data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
         operators_yield_type1 = yield_._visualize_operators_yield(data_with_clusters, 'apps')
         operators_yield_type2 = yield_._visualize_operators_yield(data_with_clusters, 'non_apps')
         st.plotly_chart(operators_yield_type1, use_container_width = True)
@@ -115,8 +116,6 @@ with tab3:
         
     with st.container():
         st.write('---')
-        #no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
-        #data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
         operators_yield_type1 = yield_._visualize_all_cluster_yield(data_with_clusters, 'apps')
         operators_yield_type2 = yield_._visualize_all_cluster_yield(data_with_clusters, 'non_apps')
         st.plotly_chart(operators_yield_type1, use_container_width = True)
@@ -134,12 +133,43 @@ with tab3:
         st.plotly_chart(cluster_yield_type2, use_container_width = True)
 
 with tab4:
-    score_lmt = clustering.calculate_fpc(scaled_data_lmt, 1.3)
-    score_lmt = clustering.set_figure(score_lmt, 'Main Quota Product Silhouette K-Means Clusters Score')
-    score_ulmt = clustering.calculate_fpc(scaled_data_ulmt, 1.3)
-    score_ulmt = clustering.set_figure(score_ulmt, 'Unlimited Quota Product Silhouette K-Means Clusters Score')
-    score_app = clustering.calculate_fpc(scaled_data_apps, 1.1)
-    score_app = clustering.set_figure(score_app, 'Main and App Quota Product FPC C-Means Clusters Score')
-    st.plotly_chart(score_lmt)
-    st.plotly_chart(score_ulmt)
-    st.plotly_chart(score_app)
+    with st.container():
+        score_lmt = clustering.calculate_fpc(scaled_data_lmt, 1.3)
+        score_lmt = clustering.set_figure(score_lmt, 'Main Quota Product FPC C-Means Clusters Score')
+        score_ulmt = clustering.calculate_fpc(scaled_data_ulmt, 1.3)
+        score_ulmt = clustering.set_figure(score_ulmt, 'Unlimited Quota Product FPC C-Means  Clusters Score')
+        score_app = clustering.calculate_fpc(scaled_data_apps, 1.1)
+        score_app = clustering.set_figure(score_app, 'Main and App Quota Product FPC C-Means Clusters Score')
+        st.plotly_chart(score_lmt)
+        st.plotly_chart(score_ulmt)
+        st.plotly_chart(score_app)
+
+    with st.container():
+        st.write('---')
+        store_data = [data_lmt, data_ulmt, data_apps]
+        store_x = ['Kuota Utama (GB)', 'Fair Usage Policy (GB)', 'Kuota Utama (GB)']
+        store_size = ['Masa Berlaku (Hari)', 'Masa Berlaku (Hari)', 'Kuota Aplikasi (GB)']
+        store_color = [None, None, 'Kuota Aplikasi (GB)']
+        store_title = ['Visualize Each Main Quota Product', 'Visualize Each Unlimited Quota Product', 'Visualize Each Main and App Quota Product']
+        for data, x, color, size, title in zip(store_data, store_x, store_color, store_size, store_title):
+            data['Cluster'] = data['Cluster'].astype('string')
+            vis = px.scatter(
+                data,
+                x=x,
+                y='Harga',
+                size=size,
+                color='Cluster',
+            )
+            vis = clustering.set_figure(vis, title)
+            st.plotly_chart(vis)
+        
+        data_apps['Cluster'] = data_apps['Cluster'].astype('string')
+        vis = px.scatter(
+                data_apps,
+                x='Kuota Utama (GB)',
+                y='Kuota Aplikasi (GB)',
+                size='Masa Berlaku (Hari)',
+                color='Cluster'
+            )
+        vis = clustering.set_figure(vis, 'Visualize Each Main and App Quota Product')
+        st.plotly_chart(vis)
