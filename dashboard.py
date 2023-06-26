@@ -13,20 +13,21 @@ yield_ = yield_functions()
 
 data = pd.read_csv("dataset/Product Information - 2023-06-25.csv")
 (data_lmt, data_ulmt, data_apps), (scaled_data_lmt, scaled_data_ulmt, scaled_data_apps) = data_prep.prepare_data(data)
+
 scaled_data_lmt = data_prep.PCA_decomposition(scaled_data_lmt, 2)
 scaled_data_ulmt = data_prep.PCA_decomposition(scaled_data_ulmt, 2)
 scaled_data_apps = data_prep.PCA_decomposition(scaled_data_apps, 3)
 data_with_clusters, data_lmt, data_ulmt, data_apps, center_lmt, center_ulmt, center_apps = clustering.create_clusters(data_lmt, data_ulmt, data_apps, scaled_data_lmt, scaled_data_ulmt, scaled_data_apps)
 
 convert = {
-    'High Main (1)':1,
-    'Low Main (2)':2,
-    'Medium Main (3)':3,
-    'High Unlimited (4)':4,
-    'Low Unlimited (5)':5,
-    '50:50 Low App and Main (6)':6,
-    '80:20 High App and Main (7)':7,
-    '20:80 Medium Main and App (8)':8
+        'High Main (1)':1,
+        'Medium Main (2)':2,
+        'Low Main (3)':3,
+        'Low Unlimited (4)':4,
+        'High Unlimited (5)':5,
+        '80:20 High Main and App (6)':6,
+        '50:50 Low Main and App (7)':7,
+        '20:80 Medium Main and App (8)':8
 }
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -39,12 +40,12 @@ with tab1:
 
     with st.container():
         st.write('---')
-        fup_quota_product = introduction.visualize_product_type(data)
+        fup_quota_product = introduction.visualize_product_type(data_with_clusters)
         st.plotly_chart(fup_quota_product, use_container_width = True)
 
     with st.container():
         st.write('---')
-        mean_operators_product_price = introduction.visualize_mean_operators_product_price(data)
+        mean_operators_product_price = introduction.visualize_mean_operators_product_price(data_with_clusters)
         st.plotly_chart(mean_operators_product_price, use_container_width = True)
 
 with tab2:
@@ -90,7 +91,6 @@ with tab2:
         with right_col:
             st.plotly_chart(harga_vis, use_container_width = True)
 
-
 with tab3:
     with st.container():
         obj, kpi = st.columns((3, 1), gap='small')
@@ -106,27 +106,27 @@ with tab3:
             st.subheader("Clusters & Yields")
     with st.container():
         st.write('---')
-        no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
-        data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
-        operators_yield_type1 = yield_._visualize_operators_yield(data_with_clusters_yield, 'apps')
-        operators_yield_type2 = yield_._visualize_operators_yield(data_with_clusters_yield, 'non_apps')
+        # no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
+        # data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
+        operators_yield_type1 = yield_._visualize_operators_yield(data_with_clusters, 'apps')
+        operators_yield_type2 = yield_._visualize_operators_yield(data_with_clusters, 'non_apps')
         st.plotly_chart(operators_yield_type1, use_container_width = True)
         st.plotly_chart(operators_yield_type2, use_container_width = True)
     with st.container():
         st.write('---')
         cluster_label = st.selectbox('Pick a Cluster', convert.keys())
         cluster = convert[cluster_label]
-        no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
-        data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
-        cluster_yield_type1 = yield_._visualize_cluster_yield(data_with_clusters_yield, cluster, 'apps', cluster_label)
-        cluster_yield_type2 = yield_._visualize_cluster_yield(data_with_clusters_yield, cluster, 'non-apps', cluster_label)
+        # no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
+        # data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
+        cluster_yield_type1 = yield_._visualize_cluster_yield(data_with_clusters, cluster, 'apps', cluster_label)
+        cluster_yield_type2 = yield_._visualize_cluster_yield(data_with_clusters, cluster, 'non-apps', cluster_label)
         st.plotly_chart(cluster_yield_type1, use_container_width = True)
         st.plotly_chart(cluster_yield_type2, use_container_width = True)
 
 with tab4:
-    score_lmt = clustering.calculate_silhouette_score(scaled_data_lmt)
+    score_lmt = clustering.calculate_fpc(scaled_data_lmt, 1.3)
     score_lmt = clustering.set_figure(score_lmt, 'Main Quota Product Silhouette K-Means Clusters Score')
-    score_ulmt = clustering.calculate_silhouette_score(scaled_data_ulmt)
+    score_ulmt = clustering.calculate_fpc(scaled_data_ulmt, 1.3)
     score_ulmt = clustering.set_figure(score_ulmt, 'Unlimited Quota Product Silhouette K-Means Clusters Score')
     score_app = clustering.calculate_fpc(scaled_data_apps, 1.1)
     score_app = clustering.set_figure(score_app, 'Main and App Quota Product FPC C-Means Clusters Score')

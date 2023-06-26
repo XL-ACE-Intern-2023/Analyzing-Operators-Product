@@ -15,31 +15,6 @@ class yield_functions:
         self.operator_in_order = {'Operator':['XL', 'Telkomsel', 'Indosat', 'AXIS', 'Tri', 'Smartfren']}
         return
     
-    def _generate_yield_data(self, data_yield):
-        yield_product = []
-        for i in range(len(data_yield['Operator'])):
-            price = data_yield['Harga'].values[i] * 1000
-            quota = data_yield['Kuota Utama (GB)'].values[i] + data_yield['Kuota Aplikasi (GB)'].values[i] + \
-                    data_yield['Fair Usage Policy (GB)'].values[i]
-            validity = data_yield['Masa Berlaku (Hari)'].values[i]
-            yield_formula = price / (quota * validity)
-            yield_product.append(round(yield_formula, 2))
-        data_yield['Yield ((Rp/GB)/Hari)'] = yield_product
-
-        return data_yield
-
-    def _non_apps_yield_data(self, raw_clustered):
-        yield_product = []
-        for i in range(len(raw_clustered['Operator'])):
-            price = raw_clustered['Harga'].values[i] * 1000
-            quota = raw_clustered['Kuota Utama (GB)'].values[i] + \
-                    raw_clustered['Fair Usage Policy (GB)'].values[i]
-            validity = raw_clustered['Masa Berlaku (Hari)'].values[i]
-            yield_formula = price / (quota * validity)
-            yield_product.append(round(yield_formula, 2))
-        raw_clustered['Yield Non-Apps ((Rp/GB)/Hari)'] = yield_product
-        
-        return raw_clustered
 
     def set_figure(self, fig, title, title_size=28, font_size=20):
         fig.update_layout(title=title ,title_font_size=title_size)

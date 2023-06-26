@@ -57,13 +57,26 @@ class data_prep_functions:
 
         return data
     
+    def generate_non_apps_yield_data(self, data):
+        yield_product = []
+        for i in range(len(data['Operator'])):
+            price = data['Harga'].values[i] * 1000
+            quota = data['Kuota Utama (GB)'].values[i] + \
+                    data['Fair Usage Policy (GB)'].values[i]
+            validity = data['Masa Berlaku (Hari)'].values[i]
+            yield_formula = price / (quota * validity)
+            yield_product.append(round(yield_formula, 2))
+        data['Yield Non-Apps ((Rp/GB)/Hari)'] = yield_product
+        
+        return data
+    
     def clean_outliers(self, data):
         data = data.loc[data['Masa Berlaku (Hari)'] <= 30, :]
         Q1 = data["Yield ((Rp/GB)/Hari)"].quantile(0.25)
         Q3 = data["Yield ((Rp/GB)/Hari)"].quantile(0.75)
         IQR = Q3 - Q1
-        lower_bound = Q1 - 1.5 * IQR
-        upper_bound = Q3 + 1.5 * IQR
+        lower_bound = Q1 - 2 * IQR
+        upper_bound = Q3 + 2 * IQR
         cleaned_data = data[(data["Yield ((Rp/GB)/Hari)"] >= lower_bound) & (data["Yield ((Rp/GB)/Hari)"] <= upper_bound)]
 
         return cleaned_data
@@ -102,9 +115,10 @@ class data_prep_functions:
         store_datas = []
         for splitted_data, columns in zip(splitted_datas, self.columns):
             yield_data = self.generate_yield_data(splitted_data)
-            scaled_data = self.scale_data(yield_data, columns)
-            # cleaned_data = self.clean_outliers(yield_data)
-            cleaned_data, cleaned_scaled_data = self.anomaly_detection(scaled_data, yield_data, columns)      
+            yield_data = self.generate_non_apps_yield_data(yield_data)
+            cleaned_data = self.clean_outliers(yield_data)
+            scaled_data = self.scale_data(cleaned_data, columns)
+            cleaned_data, cleaned_scaled_data = self.anomaly_detection(scaled_data, cleaned_data, columns)      
             store_datas.append(cleaned_data)
             store_scaled_datas.append(cleaned_scaled_data)
         

@@ -132,12 +132,12 @@ class clustering_functions:
     def label_clusters(self, data):
         convert = {
             1:'High Main (1)',
-            2:'Low Main (2)',
-            3:'Medium Main (3)',
-            4:'High Unlimited (4)',
-            5:'Low Unlimited (5)',
-            6:'50:50 Low App and Main (6)',
-            7:'80:20 High App and Main (7)',
+            2:'Medium Main (2)',
+            3:'Low Main (3)',
+            4:'Low Unlimited (4)',
+            5:'High Unlimited (5)',
+            6:'80:20 High Main and App (6)',
+            7:'50:50 Low Main and App (7)',
             8:'20:80 Medium Main and App (8)'
         }
         data['Cluster Label'] = data['Cluster'].apply(lambda key: convert[key])
@@ -145,9 +145,9 @@ class clustering_functions:
         return data
 
     def create_clusters(self, data_lmt, data_ulmt, data_apps, scaled_data_lmt, scaled_data_ulmt, scaled_data_apps):
-        cluster_lmt =  self.create_clusters_kmeans(3, scaled_data_lmt)
-        cluster_ulmt = self.create_clusters_kmeans(2, scaled_data_ulmt)
-        cluster_apps=  self.create_clusters_cmeans(3, 1.3,scaled_data_apps)
+        cluster_lmt =  self.create_clusters_cmeans(3, 1.3, scaled_data_lmt)
+        cluster_ulmt = self.create_clusters_cmeans(2, 1.3, scaled_data_ulmt)
+        cluster_apps=  self.create_clusters_cmeans(3, 1.1, scaled_data_apps)
         data_with_clusters, data_lmt, data_ulmt, data_apps = self.create_data_with_cluster(data_lmt, data_ulmt, data_apps, 
                                                                                             cluster_lmt, cluster_ulmt, cluster_apps)
         combined_centers, (center_lmt, center_ulmt, center_apps) = self.create_center_cluster(data_lmt, data_ulmt, data_apps)
@@ -339,6 +339,6 @@ class clustering_functions:
             height=1000,
             color_discrete_sequence=self.discrete_color,
             category_orders=self.operator_in_order)
-        cluster_proportions = self.set_figure(cluster_proportions, "Clusters Proportions For Each Operators")
+        cluster_proportions = self.set_figure(cluster_proportions, "Product Proportions For Each Operators")
 
         return cluster_proportions
