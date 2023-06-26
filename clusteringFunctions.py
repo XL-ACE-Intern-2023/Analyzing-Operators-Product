@@ -150,6 +150,7 @@ class clustering_functions:
         cluster_apps=  self.create_clusters_cmeans(3, 1.1, scaled_data_apps)
         data_with_clusters, data_lmt, data_ulmt, data_apps = self.create_data_with_cluster(data_lmt, data_ulmt, data_apps, 
                                                                                             cluster_lmt, cluster_ulmt, cluster_apps)
+        data_with_clusters = self.label_clusters(data_with_clusters)
         combined_centers, (center_lmt, center_ulmt, center_apps) = self.create_center_cluster(data_lmt, data_ulmt, data_apps)
 
         return (data_with_clusters, data_lmt, data_ulmt, data_apps, center_lmt, center_ulmt, center_apps)

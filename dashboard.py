@@ -112,6 +112,16 @@ with tab3:
         operators_yield_type2 = yield_._visualize_operators_yield(data_with_clusters, 'non_apps')
         st.plotly_chart(operators_yield_type1, use_container_width = True)
         st.plotly_chart(operators_yield_type2, use_container_width = True)
+        
+    with st.container():
+        st.write('---')
+        #no_outliers_data_with_clusters = data_prep.clean_outliers(data_with_clusters)
+        #data_with_clusters_yield = yield_._non_apps_yield_data(no_outliers_data_with_clusters)
+        operators_yield_type1 = yield_._visualize_all_cluster_yield(data_with_clusters, 'apps')
+        operators_yield_type2 = yield_._visualize_all_cluster_yield(data_with_clusters, 'non_apps')
+        st.plotly_chart(operators_yield_type1, use_container_width = True)
+        st.plotly_chart(operators_yield_type2, use_container_width = True)
+
     with st.container():
         st.write('---')
         cluster_label = st.selectbox('Pick a Cluster', convert.keys())
