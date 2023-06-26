@@ -245,7 +245,7 @@ class clustering_functions:
                                 color_discrete_map=self.discrete_color_operator,
                                 category_orders=self.operator_in_order
                                 )
-            visual = self.set_figure(visual, None)
+            visual = self.set_figure(visual, "")
             list_visual.append(visual)
 
         return tuple(list_visual)
@@ -323,18 +323,22 @@ class clustering_functions:
 
     def visualize_clusters_proportions(self, data_with_clusters):
         data_cluster = data_with_clusters.groupby('Operator')['Cluster'].value_counts('Cluster').reset_index().rename(columns={'proportion':'Proportion (%)'})
+        data_cluster2 = data_with_clusters.groupby('Operator')['Cluster'].value_counts().reset_index()['count']
         data_cluster['Proportion (%)'] = data_cluster['Proportion (%)'] * 100
+        data_cluster ['Counts'] = data_cluster2
         data_cluster = self.label_clusters(data_cluster)
         data_cluster['Cluster'] = data_cluster['Cluster'].astype('string')
         cluster_proportions = px.bar(
             data_cluster,
             y="Proportion (%)",
+            hover_data= "Counts",
             x="Operator",
             text="Cluster Label",
             color="Cluster",
             barmode = 'stack',
             height=1000,
-            color_discrete_sequence=self.discrete_color)
+            color_discrete_sequence=self.discrete_color,
+            category_orders=self.operator_in_order)
         cluster_proportions = self.set_figure(cluster_proportions, "Clusters Proportions For Each Operators")
 
         return cluster_proportions

@@ -72,10 +72,16 @@ with tab2:
         st.write('---')
         count_each_clusters_vis = clustering.visualize_count_each_clusters(data_with_clusters)
         st.plotly_chart(count_each_clusters_vis, use_container_width = True)
-    
+
+    with st.container():
+        cluster_proportions = clustering.visualize_clusters_proportions(data_with_clusters)
+        st.write('---')
+        st.plotly_chart(cluster_proportions, use_container_width = True)
+
     with st.container():
         st.write('---')
         cluster_label = st.selectbox('Select a Cluster', convert.keys())
+        st.subheader("Quota and Price Comparison between Operators in each Cluster")
         cluster = convert[cluster_label]
         left_col, _, right_col = st.columns((10, 1, 10), gap='small')
         quota_vis, harga_vis = clustering.visualize_cluster_char_in_operator(data_with_clusters, cluster)
@@ -84,10 +90,6 @@ with tab2:
         with right_col:
             st.plotly_chart(harga_vis, use_container_width = True)
 
-    with st.container():
-        cluster_proportions = clustering.visualize_clusters_proportions(data_with_clusters)
-        st.write('---')
-        st.plotly_chart(cluster_proportions, use_container_width = True)
 
 with tab3:
     with st.container():
