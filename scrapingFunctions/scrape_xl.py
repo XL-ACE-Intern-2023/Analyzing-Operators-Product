@@ -33,7 +33,7 @@ def process_scraped_data(scraped_data):
             final_scraped_data.append(cleaned)
         else:
             final_scraped_data.append(product)
-    
+
     return np.array(final_scraped_data)
 
 def convert_scraped_data_to_csv(scraped_data):
@@ -41,13 +41,13 @@ def convert_scraped_data_to_csv(scraped_data):
     for product in scraped_data:
         temp_dict = {}
         temp_dict['Product Name'] = [product[0]]
-        for benfefit_name, benefit in zip(product[1:-1:2], product[2:-1:2]):
-            temp_dict[benfefit_name] = [benefit]
+        temp_dict['Price'] = [product[-2]]
+        for benefit_name, benefit in zip(product[1:-2:2], product[2:-2:2]):
+            temp_dict[benefit_name] = [benefit]
         temp_data = pd.DataFrame(temp_dict)
         data = pd.concat([data, temp_data])
 
     return data
-
 
 urls = [
     'https://www.xl.co.id/id/produk/paket-dan-addon/xtra-combo-flex-mc',
