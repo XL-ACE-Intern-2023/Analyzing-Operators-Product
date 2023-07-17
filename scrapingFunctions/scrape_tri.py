@@ -1,3 +1,4 @@
+import re
 import time
 import pandas as pd
 from selenium import webdriver
@@ -135,6 +136,11 @@ def convert_processed_data_to_csv(processed_data):
                 benefit_active = '01.00-09.00'
                 benefit_amount = temp_row[1]
                 benefit_duration = temp_row[2] 
+                
+            elif benefit_name == 'Kuota 4G':
+                benefit_active = '24 Jam'
+                benefit_amount = temp_row[1]
+                benefit_duration = temp_row[2] 
 
             temp_dict[f'{benefit_name} Active'] =  [benefit_active]
             temp_dict[f'{benefit_name} Amount'] =  [benefit_amount]
@@ -142,6 +148,52 @@ def convert_processed_data_to_csv(processed_data):
                
         temp_df = pd.DataFrame(temp_dict)
         df = pd.concat([df, temp_df])
+
+    return df
+
+def process_product_data(df):
+    df['Price'] = df['Price'].apply(lambda val: val[2:].replace('.', '')).astype('int')
+    df.fillna('0', inplace=True)
+    for column in df.columns:
+        if column.split()[-1] == 'Amount':
+            df = df.loc[df[column] != 'Unlimited', :] 
+            df[column] = df[column].apply(lambda val: val[:-2] if val[-2:] == 'GB' else val).astype('float')
+        elif column.split()[-1] == 'Duration':
+            df[column] = df[column].apply(lambda val: re.findall(r'(\d*) hari', val.lower())[0] if len(re.findall(r'(\d*) hari', val.lower())) > 0 else 0).astype('float')
+        elif column.split()[-1] == 'Active':
+            df.drop(columns=[column], inplace=True)
+
+    main_quota = [
+        'Kuota Nasional', 
+        'Kuota Reguler',
+        'Kuota Weekend', 
+        'Kuota 01.00-17.00', 
+        'Kuota 01.00-06.00 dan 15.00-18.00',
+        'Kuota AON',
+        'Kuota Harian',
+        'Kuota 01.00 - 05.59',
+        'Kuota 01.00 - 09.00',
+        'Kuota 4G'
+    ]
+    main_quota_amount = [f'{val} Amount' for val in main_quota]
+    main_quota_duration = [f'{val} Duration' for val in main_quota]
+    df['Main Quota Amount (GB)'] = df.apply(lambda row: row[main_quota_amount].sum(), axis=1)
+    df.drop(columns=main_quota_amount, inplace=True)
+    df['Main Quota Duration (Hari)'] = df.apply(lambda row: row[main_quota_duration].max(), axis=1)
+    df.drop(columns=main_quota_duration, inplace=True)    
+
+    app_quota = [
+        'Kuota Tiktok',
+        'Kuota Streaming',
+    ]
+    app_quota_amount = [f'{val} Amount' for val in app_quota]
+    app_quota_duration = [f'{val} Duration' for val in app_quota]
+    df['App Quota Amount (GB)'] = df.apply(lambda row: row[app_quota_amount].sum(), axis=1)
+    df.drop(columns=app_quota_amount, inplace=True)
+    df['App Quota Duration (Hari)'] = df.apply(lambda row: row[app_quota_duration].max(), axis=1)
+    df.drop(columns=app_quota_duration, inplace=True)  
+
+    df['Product Duration (Hari)'] = df.apply(lambda row: row[['Main Quota Duration (Hari)', 'App Quota Duration (Hari)']].max() , axis=1)  
 
     return df
 
@@ -155,4 +207,7 @@ for i in range(1, 9):
         df = convert_processed_data_to_csv(processed_data)
         df_combined = pd.concat([df_combined, df])
     
-df_combined.to_csv('Tri_Products.csv', index=False)
+df_combined.to_csv('Tri_Products_Raw.csv', index=False)
+
+final_df = process_product_data(df_combined)
+final_df.to_csv('Tri_Products.csv', index=False)

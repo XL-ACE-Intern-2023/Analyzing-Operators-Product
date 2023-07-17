@@ -1,24 +1,29 @@
-Product Name,Price,Kuota Utama,Kuota Area,Telepon Semua Operator,Turbo Chat,Telpon Semua Operator,Kuota Bersama,Kuota Pribadi,Kuota Aplikasi,Telepon & SMS ke XL/AXIS,Total Anggota,Masa Aktif,Telepon ke Semua Operator,Unlimited Productivity,Unlimited Productiviy,YouTube,Masa Berlaku
-Xtra Combo Flex S+,Rp31.000,3 GB,hingga 7 GB,5 menit,"WhatsApp,Line",,,,,,,,,,,,
-Xtra Combo Flex M,Rp41.000,5 GB,hingga 10 GB,,"WhatsApp,Line",5 menit,,,,,,,,,,,
-Xtra Combo Flex L,Rp60.000,9 GB,hingga 18 GB,,"WhatsApp,Line",5 menit,,,,,,,,,,,
-Xtra Combo Flex XL,Rp85.000,15 GB,hingga 30 GB,,"WhatsApp,Line",5 menit,,,,,,,,,,,
-Xtra Combo Flex XXL,Rp115.000,30 GB,hingga 60 GB,,"WhatsApp,Line",5 menit,,,,,,,,,,,
-Xtra Combo Flex XXXL,Rp140.000,60 GB,hingga 120 GB,,"WhatsApp,Line",5 menit,,,,,,,,,,,
-30 GB,Rp62.000,,,,,,10 GB,hingga 10 GB,Unlimited,Unlimited,2 orang,30 hari,,,,,
-42 GB,Rp85.000,,,,,,16 GB,hingga 13 GB,Unlimited,Unlimited,2 orang,30 hari,,,,,
-65 GB,Rp125.000,,,,,,25 GB,hingga 20 GB,Unlimited,Unlimited,2 orang,30 hari,,,,,
-147 GB,Rp205.000,,,,,,45 GB,hingga 34 GB,Unlimited,Unlimited,3 orang,30 hari,,,,,
-260 GB,Rp320.000,,,,,,80 GB,hingga 45 GB,Unlimited,Unlimited,4 orang,30 hari,,,,,
-460 GB,Rp515.000,,,,,,160 GB,hingga 75 GB,Unlimited,Unlimited,4 orang,30 hari,,,,,
-Xtra Combo VIP Plus 10 GB,Rp71.500,10 GB,hingga 10 GB,,,,,,hingga 3 GB,,,,20 menit,Bonus,,,
-Xtra Combo VIP Plus 20 GB,Rp101.000,20 GB,hingga 20 GB,,,,,,hingga 3 GB,,,,30 menit,Bonus,,,
-Xtra Combo VIP Plus 30 GB,Rp141.000,30 GB,hingga 24 GB,,,,,,hingga 6 GB,,,,40 menit,Bonus,,,
-Xtra Combo VIP Plus 52 GB,Rp192.000,52 GB GB,hingga 40 GB,,,,,,hingga 9 GB,,,,60 menit,,Bonus,,
-Xtra Combo VIP Plus 72 GB,Rp252.500,72 GB,hingga 50 GB,,,,,,hingga 15 GB,,,,90 menit,Bonus,,,
-Xtra Combo Mini 1.5 GB,Rp9.900,1 GB,hingga 2.5 GB,,,,,,,,,7 hari,,,,0.5 GB,
-Xtra Combo Mini 2.5 GB,Rp14.900,1.5 GB,hingga 4 GB,,,,,,,,,7 hari,,,,1 GB,
-Xtra Combo Mini 4 GB,Rp18.900,2 GB,hingga 6 GB,,,,,,,,,7 hari,,,,2 GB,
-Xtra Combo Mini 6 GB,Rp24.900,3 GB,hingga 8.5 GB,,,,,,,,,7 hari,,,,3 GB,
-Xtra Kuota Utama 2GB,Rp6.000,2GB,,,,,,,,,,,,,,,12 Jam
-Xtra Kuota Utama 2GB,Rp7.500,2 GB,,,,,,,,,,,,,,,24 Jam
+Product Name,Price,Total Anggota,Main Quota,Limited Application Quota,Unlimited Application Quota,Product Duration
+Xtra Combo Flex S+,31000,0,10.0,0.0,0.0,30.0
+Xtra Combo Flex M,41000,0,15.0,0.0,0.0,30.0
+Xtra Combo Flex L,60000,0,27.0,0.0,0.0,30.0
+Xtra Combo Flex XL,85000,0,45.0,0.0,0.0,30.0
+Xtra Combo Flex XXL,115000,0,90.0,0.0,0.0,30.0
+Xtra Combo Flex XXXL,140000,0,180.0,0.0,0.0,30.0
+30 GB,62000,2 orang,30.0,0.0,1.0,30.0
+42 GB,85000,2 orang,42.0,0.0,1.0,30.0
+65 GB,125000,2 orang,65.0,0.0,1.0,30.0
+147 GB,205000,3 orang,147.0,0.0,1.0,30.0
+260 GB,320000,4 orang,260.0,0.0,1.0,30.0
+460 GB,515000,4 orang,460.0,0.0,1.0,30.0
+Xtra Combo VIP Plus 10 GB,71500,0,20.0,3.0,1.0,30.0
+Xtra Combo VIP Plus 20 GB,101000,0,40.0,3.0,1.0,30.0
+Xtra Combo VIP Plus 30 GB,141000,0,54.0,6.0,1.0,30.0
+Xtra Combo VIP Plus 52 GB,192000,0,92.0,9.0,1.0,30.0
+Xtra Combo VIP Plus 72 GB,252500,0,122.0,15.0,1.0,30.0
+Xtra Combo Plus 10 GB,59900,0,20.0,3.0,2.0,30.0
+Xtra Combo Plus 20 GB,89900,0,40.0,3.0,2.0,30.0
+Xtra Combo Plus 30 GB,134000,0,56.0,6.0,2.0,30.0
+Xtra Combo Plus 52 GB,182900,0,92.0,9.0,2.0,30.0
+Xtra Combo Plus 72 GB,244900,0,122.0,15.0,2.0,30.0
+Xtra Combo Mini 1.5 GB,9900,0,3.0,0.0,0.0,7.0
+Xtra Combo Mini 2.5 GB,14900,0,5.0,1.0,0.0,7.0
+Xtra Combo Mini 4 GB,18900,0,8.0,2.0,0.0,7.0
+Xtra Combo Mini 6 GB,24900,0,11.0,3.0,0.0,7.0
+Xtra Kuota Utama 2GB,6000,0,2.0,0.0,0.0,0.5
+Xtra Kuota Utama 2GB,7500,0,2.0,0.0,0.0,1.0
