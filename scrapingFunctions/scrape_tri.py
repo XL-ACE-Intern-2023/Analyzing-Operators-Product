@@ -75,7 +75,7 @@ class scrape_tri_functions():
         for row in processed_data:
             temp_dict = {}
             temp_dict['Product Name'] = [row[-1]]
-            temp_dict['Price'] = [row[-2]]
+            temp_dict['Price (Rp)'] = [row[-2]]
 
             kuota_index = []
             for index, val in enumerate(row[:-2]):
@@ -176,7 +176,7 @@ class scrape_tri_functions():
         return dataset
 
     def process_product_data(self, processed_data_df):
-        processed_data_df['Price'] = processed_data_df['Price'].apply(lambda val: val[2:]).astype('float')
+        processed_data_df['Price (Rp)'] = processed_data_df['Price (Rp)'].apply(lambda val: val[2:]).astype('float')
         processed_data_df.fillna('0', inplace=True)
 
         processed_data_df = self._process_columns(processed_data_df)
@@ -200,15 +200,15 @@ class scrape_tri_functions():
             'Kuota Streaming'
         ]
 
-        processed_data_df = self._create_column(processed_data_df, limited_app_quota, 'Limited App Quota')
+        processed_data_df = self._create_column(processed_data_df, limited_app_quota, 'Limited Application Quota')
 
         unlimited_app_quota = [
             'Kuota Tiktok'
         ]
 
-        processed_data_df = self._create_column(processed_data_df, unlimited_app_quota, 'Unlimited App Quota')
+        processed_data_df = self._create_column(processed_data_df, unlimited_app_quota, 'Unlimited Application Quota')
 
-        processed_data_df['Product Duration (Hari)'] = processed_data_df.apply(lambda row: row[['Limited Main Quota Duration (Hari)', 'Limited App Quota Duration (Hari)', 'Unlimited App Quota Duration (Hari)']].max() , axis=1)  
+        processed_data_df['Validity Duration (Day)'] = processed_data_df.apply(lambda row: row[['Limited Main Quota Duration (Hari)', 'Limited Application Quota Duration (Hari)', 'Unlimited Application Quota Duration (Hari)']].max() , axis=1)  
 
         return processed_data_df
     
@@ -228,3 +228,6 @@ class scrape_tri_functions():
         tri_products_data.to_csv('Tri_Products.csv', index=False)
 
         return tri_products_data
+    
+tri = scrape_tri_functions()
+tri.execute()

@@ -61,7 +61,7 @@ class scrape_xl_functions():
         for product in processed_data:
             temp_dict = {}
             temp_dict['Product Name'] = [product[0]]
-            temp_dict['Price'] = [product[-2]]
+            temp_dict['Price (Rp)'] = [product[-2]]
             for benefit_name, benefit in zip(product[1:-2:2], product[2:-2:2]):
                 temp_dict[benefit_name] = [benefit]
             temp_data = pd.DataFrame(temp_dict)
@@ -113,15 +113,15 @@ class scrape_xl_functions():
     def _process_and_combine_duration_columns(self, dataset):
         dataset['Masa Berlaku'] = dataset['Masa Berlaku'].apply(lambda val: float(re.findall(r'(\d+)', val)[0]) / 24 if val != '0' else 0).astype('float')
         dataset['Masa Aktif'] = dataset['Masa Aktif'].astype('float')
-        dataset['Product Duration'] = dataset.apply(lambda row: row[['Masa Berlaku', 'Masa Aktif']].sum(), axis=1).astype('float')
-        dataset['Product Duration'] = dataset['Product Duration'].apply(lambda val: 30 if val == 0 else val).astype('float')
+        dataset['Validity Duration (Day)'] = dataset.apply(lambda row: row[['Masa Berlaku', 'Masa Aktif']].sum(), axis=1).astype('float')
+        dataset['Validity Duration (Day)'] = dataset['Validity Duration (Day)'].apply(lambda val: 30 if val == 0 else val).astype('float')
         dataset.drop(columns=['Masa Berlaku', 'Masa Aktif'], inplace=True)
 
         return dataset
 
     def process_product_data(self, data):
         data.fillna('0', inplace=True)
-        data['Price'] = data['Price'].apply(lambda val: val[2:].replace('.', '')).astype('int')
+        data['Price (Rp)'] = data['Price (Rp)'].apply(lambda val: val[2:]).astype('float')
         # Combine columns with similar names
         data = self._combine_similar_columns(data)
         # Extract the amount of quota given by a product
@@ -152,7 +152,7 @@ class scrape_xl_functions():
             'Unlimited',
             'Turbo Chat'
         ]
-        data = self._combine_columns(data, unlimited_app_quota, 'Unlimited Application Quota(GB)')
+        data = self._combine_columns(data, unlimited_app_quota, 'Unlimited Application Quota (GB)')
 
         # Drop columns that contains information on free calls
         calls = [
@@ -188,3 +188,6 @@ class scrape_xl_functions():
         xl_products_data.to_csv('XL_Products.csv', index=False)
 
         return xl_products_data_raw
+    
+xl = scrape_xl_functions()
+xl.execute()
