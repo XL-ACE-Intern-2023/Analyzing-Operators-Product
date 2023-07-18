@@ -152,4 +152,4 @@ class scrape_indosat_function:
 
 indosat_func = scrape_indosat_function()
 
-indosat_func.execute().to_csv("Indosat_Products.csv")
+indosat_func.execute().to_csv("Indosat_Products.csv", index=False)

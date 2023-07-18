@@ -284,4 +284,4 @@ class scrape_axis_function:
 
 axisfunc = scrape_axis_function()
 
-axisfunc.execute().to_csv("Axis_Products.csv")
+axisfunc.execute().to_csv("Axis_Products.csv", index=False)
