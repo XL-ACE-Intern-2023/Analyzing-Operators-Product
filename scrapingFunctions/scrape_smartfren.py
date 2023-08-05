@@ -87,18 +87,30 @@ def get_numeric_column(data):
     return data
 
 def fixing_column(data) :
-    data['Unlimited Main (GB)'] = ['']*data.shape[0]
+    data['Unlimited Main Quota (GB)'] = ['']*data.shape[0]
     for i in range(data.shape[0]) :
         if 'Unlimited' in re.findall(r'Unlimited',data['Product Name'].values[i])  :
-            data['Unlimited Main (GB)'].values[i] = float(data['Kuota Utama'].values[i]) + float(data['Setiap Hari'].values[i]) + float(data['Kuota 24 Jam'].values[i]) + float(data['Bonus Kuota Lokal'].values[i]) + float(data['Bonus Kuota'].values[i])
+            data['Unlimited Main Quota (GB)'].values[i] = float(data['Kuota Utama'].values[i]) + float(data['Setiap Hari'].values[i]) + float(data['Kuota 24 Jam'].values[i]) + float(data['Bonus Kuota Lokal'].values[i]) + float(data['Bonus Kuota'].values[i])
             data['Kuota Utama'].values[i] = 0
         else :
-            data['Unlimited Main (GB)'].values[i] = 0
+            data['Unlimited Main Quota (GB)'].values[i] = 0
             data['Kuota Utama'].values[i] = float(data['Kuota Utama'].values[i]) + float(data['Kuota 24 Jam'].values[i]) + float(data['Kuota Lokal'].values[i])
     data['Price'] = data['Price'].astype(float)
-    data = data[['Product Name','Price','Validity','Kuota Utama','Unlimited Main (GB)','Kuota Aplikasi']]
-    data = data.rename(columns={'Kuota Utama':'Limited Main (GB)',
-                               'Kuota Aplikasi' : 'Limited Apps (GB)'})
+    data = data[['Product Name','Price','Validity','Kuota Utama','Unlimited Main Quota (GB)','Kuota Aplikasi']]
+    data = data.rename(columns={'Price':'Price (Rp)',
+                                'Validity':'Validity Duration (Day)',
+                                'Kuota Utama':'Limited Main Quota (GB)',
+                               'Kuota Aplikasi' : 'Limited Application Quota (GB)'})
+    data = data.reset_index(drop=True)
+    return data
+
+def drop_nonstop(data):
+    list_index = []
+    for i in range(data.shape[0]):
+        if 'Nonstop' in data['Product Name'].values[i] :
+            list_index.append(i)
+    data = data.drop(list_index,axis=0)
+    data = data.reset_index(drop=True)
     return data
 
 data_smartfren = data_fix.copy()
@@ -106,4 +118,4 @@ data_smartfren = data_fix.copy()
 data_smartfren = clean_data(data_smartfren)
 data_smartfren = get_numeric_column(data_smartfren)
 data_smartfren = fixing_column(data_smartfren)
-print(data_smartfren)
+data_smartfren = drop_nonstop(data_smartfren)
