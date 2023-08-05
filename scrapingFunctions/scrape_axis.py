@@ -137,17 +137,29 @@ class scrape_axis_function:
                         continue
 
                     else:
+
                         if list_product[0] in stops :
                             del list_product[:3]
+                        # print(list_product)
 
                         row['Operator'] = 'AXIS'
                         row['Produk'] = "AXIS BOOSTR " + str(section) + " " + (" ".join(list_product[:4]))
-                        row['Harga'] = float(list_product[3])
+
+                        if float(list_product[3]) < 500 :
+                            row['Harga'] = float(list_product[3])
+                        else :
+                            row['Harga'] = float(list_product[3])/1000
+
                         row['Masa Berlaku (Hari)'] = int(re.findall(r"Masa aktif (\d+) hari", list_product[4])[0])
 
                         row['Kuota Utama (GB)'] = 0
 
-                        row['Kuota Aplikasi (GB)'] = float(list_product[0])
+                        if list_product[1] == 'GB' :
+                            row['Kuota Aplikasi (GB)'] = float(list_product[0])
+                        else : #MB
+                            row['Kuota Aplikasi (GB)'] = float(list_product[0]) / 1000
+
+
                         row['Fair Usage Policy (GB)'] = 0
                         row['Fair Usage Policy App (GB)'] = 0
                         row['Lainnya'] = np.nan
@@ -170,59 +182,67 @@ class scrape_axis_function:
 
         # Section 1 : Paket Internet Warnet
 
-        paketwarnet1 = driver.find_element(By.XPATH,"//div[@class = 'container py-main pb-0 pt-0']").text.split("\n")
+        paketwarnet1 = driver.find_element(By.XPATH, "//div[@class = 'container py-main pb-0 pt-0']").text.split("\n")
         paketwarnet1.pop(0)
 
         dframe = pd.DataFrame()
         list_product = []
-        for info in paketwarnet1 :
+        for info in paketwarnet1:
             row = {}
 
-            if info != 'Beli' :
+            if info != 'Beli':
                 list_product.append(info)
                 continue
 
             else:
+                try:
+                    # print(list_product)
+                    row['Operator'] = 'AXIS'
+                    row['Produk'] = "AXIS " + "Warnet" + " " + (" ".join(list_product[:4]))
+                    row['Harga'] = float(list_product[3])
+                    row['Masa Berlaku (Hari)'] = float(re.findall(r"Masa aktif (\d+) jam", list_product[4])[0]) / 24
 
-                row['Operator'] = 'AXIS'
-                row['Produk'] = "AXIS " + "Warnet" + " " + (" ".join(list_product[:4]))
-                row['Harga'] = float(list_product[3])
-                row['Masa Berlaku (Hari)'] = int(re.findall(r"Masa aktif (\d+) jam", list_product[4])[0])/24
+                    if list_product[1] == 'GB':
+                        row['Kuota Utama (GB)'] = float(list_product[0])
+                    else:  # MB
+                        row['Kuota Utama (GB)'] = float(list_product[0]) / 1000
 
-                row['Kuota Utama (GB)'] = float(list_product[0].replace(",","."))
+                    row['Kuota Aplikasi (GB)'] = 0
+                    row['Fair Usage Policy (GB)'] = 0
+                    row['Fair Usage Policy App (GB)'] = 0
+                    row['Lainnya'] = np.nan
+                    # print(row)
 
-                row['Kuota Aplikasi (GB)'] = 0
-                row['Fair Usage Policy (GB)'] = 0
-                row['Fair Usage Policy App (GB)'] = 0
-                row['Lainnya'] = np.nan
-                # print(row)
-
-                row_df = pd.DataFrame(row, index=[0])
-                dframe = pd.concat([dframe, row_df])
+                    row_df = pd.DataFrame(row, index=[0])
+                    dframe = pd.concat([dframe, row_df])
+                except:
+                    continue
 
                 list_product = []
 
         # Section 2 : Paket Internet Warnet + Game Token
 
         games = ["mobile-legend", "free-fire", "arena-of-valor", "call-of-duty-mobile"]
-        games_item = {"mobile-legend" : "DIAMOND",
-                           "free-fire" : "DIAMOND",
-                           "arena-of-valor" : "VOUCHERS",
-                           "call-of-duty-mobile" : "CP"
-        }
+        games_item = {"mobile-legend": "DIAMOND",
+                      "free-fire": "DIAMOND",
+                      "arena-of-valor": "VOUCHERS",
+                      "call-of-duty-mobile": "CP"
+                      }
 
-        for game in games :
-            time.sleep(2)
+        for game in games:
+            time.sleep(5)
             driver.get("https://www.axis.co.id/produk/paket-internet/paket-warnet?token={}".format(game))
-            paketwarnet2_pergame = driver.find_element(By.XPATH, "//section[@class = 'py-main pt-0 sc-pilih-paket-token']").text.split("\n")
-            for i in range (0,5) :
+            paketwarnet2_pergame = driver.find_element(By.XPATH,
+                                                       "//section[@class = 'py-main pt-0 sc-pilih-paket-token card-on-view']").text.split(
+                "\n")
+            for i in range(0, 5):
                 paketwarnet2_pergame.pop(0)
 
             list_product = []
-            for info in paketwarnet2_pergame :
+            for info in paketwarnet2_pergame:
                 row = {}
 
-                if info != str(games_item[game]) :
+                if info != str(games_item[game]):
                     list_product.append(info)
                     continue
 
@@ -231,9 +251,9 @@ class scrape_axis_function:
                     row['Operator'] = 'AXIS'
                     row['Produk'] = "AXIS " + "Warnet " + ("{} ".format(str(game))) + (" ".join(list_product[:4]))
                     row['Harga'] = float(list_product[3])
-                    row['Masa Berlaku (Hari)'] = int(re.findall(r"Masa aktif (\d+) jam", list_product[4])[0])/24
+                    row['Masa Berlaku (Hari)'] = int(re.findall(r"Masa aktif (\d+) jam", list_product[4])[0]) / 24
 
-                    row['Kuota Utama (GB)'] = float(list_product[0].replace(",","."))
+                    row['Kuota Utama (GB)'] = float(list_product[0].replace(",", "."))
 
                     row['Kuota Aplikasi (GB)'] = 0
                     row['Fair Usage Policy (GB)'] = 0
@@ -248,6 +268,25 @@ class scrape_axis_function:
 
         return dframe
 
+    def combine_then_rename_columns(self, df1):
+        dframe = pd.concat([df1], axis=0).reset_index().drop(['index'], axis=1)
+
+        rename_dict = {
+
+            "Operator": "Operator",
+            "Produk": "ProductName",
+            "Harga": "Price (Rp)",
+            "Masa Berlaku (Hari)": "Validity Duration (Day)",
+            "Kuota Utama (GB)": "Limited Main Quota (GB)",
+            "Fair Usage Policy (GB)": "Unlimited Main Quota (GB)",
+            "Kuota Aplikasi (GB)": "Limited Application Quota (GB)",
+            "Fair Usage Policy App (GB)": "Unlimited Application Quota (GB)",
+            "Lainnya": "Others"
+
+        }
+        dframe = dframe.rename(columns=rename_dict)
+
+        return dframe
 
     def combine_then_rename_columns(self, df1, df2, df3):
         dframe = pd.concat([df1, df2, df3], axis=0).reset_index().drop(['index'],axis=1)
