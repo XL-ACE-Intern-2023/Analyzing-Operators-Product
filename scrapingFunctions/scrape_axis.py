@@ -105,7 +105,10 @@ class scrape_axis_function:
 
                         row['Operator'] = 'AXIS'
                         row['Produk'] = "AXIS BOOSTR " + str(section) + " " + (" ".join(list_product[:4]))
-                        row['Harga'] = float(list_product[3])
+                        if len(list_product[3]) > 3:
+                            row['Harga'] = float(list_product[3])
+                        else:
+                            row['Harga'] = float(list_product[3]) / 1000
                         row['Masa Berlaku (Hari)'] = int(re.findall(r"Masa aktif (\d+) hari", list_product[4])[0])
 
                         row['Kuota Utama (GB)'] = float(list_product[0])
@@ -145,7 +148,7 @@ class scrape_axis_function:
                         row['Operator'] = 'AXIS'
                         row['Produk'] = "AXIS BOOSTR " + str(section) + " " + (" ".join(list_product[:4]))
 
-                        if float(list_product[3]) < 500 :
+                        if len(list_product[3]) > 3 :
                             row['Harga'] = float(list_product[3])
                         else :
                             row['Harga'] = float(list_product[3])/1000
@@ -199,7 +202,12 @@ class scrape_axis_function:
                     # print(list_product)
                     row['Operator'] = 'AXIS'
                     row['Produk'] = "AXIS " + "Warnet" + " " + (" ".join(list_product[:4]))
-                    row['Harga'] = float(list_product[3])
+
+                    if len(list_product[3]) > 3:
+                        row['Harga'] = float(list_product[3])
+                    else:
+                        row['Harga'] = float(list_product[3]) / 1000
+
                     row['Masa Berlaku (Hari)'] = float(re.findall(r"Masa aktif (\d+) jam", list_product[4])[0]) / 24
 
                     if list_product[1] == 'GB':
