@@ -102,7 +102,7 @@ class scrape_axis_function:
                         if list_product[0] == 'Kuota 17.00 - 20.00' :
                             del list_product[:3]
 
-
+                        # print(list_product)
                         row['Operator'] = 'AXIS'
                         row['Produk'] = "AXIS BOOSTR " + str(section) + " " + (" ".join(list_product[:4]))
                         if len(list_product[3]) > 3:
@@ -111,7 +111,10 @@ class scrape_axis_function:
                             row['Harga'] = float(list_product[3]) / 1000
                         row['Masa Berlaku (Hari)'] = int(re.findall(r"Masa aktif (\d+) hari", list_product[4])[0])
 
-                        row['Kuota Utama (GB)'] = float(list_product[0])
+                        if len(list_product[0]) > 1 :
+                            row['Kuota Utama (GB)'] = float(list_product[0]) / 1000
+                        else:
+                            row['Kuota Utama (GB)'] = float(list_product[0])
 
                         row['Kuota Aplikasi (GB)'] = 0
                         row['Fair Usage Policy (GB)'] = 0
